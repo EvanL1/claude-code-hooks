@@ -1,0 +1,69 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "type": "command",
+        "command": "/Users/lyf/.claude/hooks/terminal-ui.sh"
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/lyf/.claude/hooks/docker-validator.py"
+          },
+          {
+            "type": "command",
+            "command": "/Users/lyf/.claude/hooks/git-safety-check.py"
+          },
+          {
+            "type": "command",
+            "command": "/Users/lyf/.claude/hooks/npm-safety-check.py"
+          },
+          {
+            "type": "command",
+            "command": "/Users/lyf/.claude/hooks/cargo-auto-format.py"
+          },
+          {
+            "type": "command",
+            "command": "/Users/lyf/.claude/hooks/java-build-check.py"
+          },
+          {
+            "type": "command",
+            "command": "/Users/lyf/.claude/hooks/aws-safety-check.py"
+          },
+          {
+            "type": "command",
+            "command": "/Users/lyf/.claude/hooks/dev-event-notifier.py"
+          },
+          {
+            "type": "command",
+            "command": "/Users/lyf/.claude/hooks/commit-message-filter.py"
+          }
+        ]
+      },
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/lyf/.claude/hooks/command-logger.py"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/lyf/.claude/hooks/file-stats.py"
+          }
+        ]
+      }
+    ]
+  }
+}
