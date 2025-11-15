@@ -72,36 +72,44 @@ def analyze_file(file_path):
 
 def main():
     """主函数"""
-    # 从stdin读取tool use信息
-    tool_use_json = sys.stdin.read()
-    tool_use = json.loads(tool_use_json)
+    try:
+        # 从stdin读取tool use信息
+        tool_use_json = sys.stdin.read()
+        tool_use = json.loads(tool_use_json)
 
-    # 只处理Write和Edit工具
-    if tool_use.get("tool") not in ["Write", "Edit", "MultiEdit"]:
-        print(json.dumps({"decision": "allow"}))
-        return
+        # 只处理Write和Edit工具
+        tool = tool_use.get("tool") or tool_use.get("tool_name")
+        if tool not in ["Write", "Edit", "MultiEdit"]:
+            sys.exit(0)
 
-    file_path = tool_use.get("arguments", {}).get("file_path")
-    if not file_path:
-        print(json.dumps({"decision": "allow"}))
-        return
+        # 获取文件路径
+        arguments = tool_use.get("arguments") or tool_use.get("tool_input", {})
+        file_path = arguments.get("file_path")
 
-    # 分析文件（如果已存在）
-    stats = analyze_file(file_path)
+        if not file_path:
+            sys.exit(0)
 
-    if stats:
-        message = f"📊 文件统计: {os.path.basename(file_path)}\n"
-        message += f"   行数: {stats['lines']}\n"
-        message += f"   字符数: {stats['characters']}\n"
-        message += f"   单词数: {stats['words']}\n"
-        if stats["functions"] > 0:
-            message += f"   函数数: {stats['functions']}\n"
-        if stats["classes"] > 0:
-            message += f"   类数: {stats['classes']}\n"
+        # 分析文件（如果已存在）
+        stats = analyze_file(file_path)
 
-        print(json.dumps({"decision": "allow", "message": message}))
-    else:
-        print(json.dumps({"decision": "allow"}))
+        if stats:
+            message = f"📊 文件统计: {os.path.basename(file_path)}\n"
+            message += f"   行数: {stats['lines']}\n"
+            message += f"   字符数: {stats['characters']}\n"
+            message += f"   单词数: {stats['words']}\n"
+            if stats["functions"] > 0:
+                message += f"   函数数: {stats['functions']}\n"
+            if stats["classes"] > 0:
+                message += f"   类数: {stats['classes']}\n"
+
+            print(message)
+
+        # 总是允许操作
+        sys.exit(0)
+
+    except Exception:
+        # 错误时不阻止操作
+        sys.exit(0)
 
 
 if __name__ == "__main__":

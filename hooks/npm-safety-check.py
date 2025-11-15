@@ -11,6 +11,8 @@ import re
 
 def check_npm_command(command):
     """检查npm/yarn命令的安全性"""
+    messages = []
+
     # 危险的npm操作
     dangerous_operations = {
         r"npm\s+publish": "即将发布包到npm registry，请确认版本和内容",
@@ -26,7 +28,7 @@ def check_npm_command(command):
     # 检查危险操作
     for pattern, warning in dangerous_operations.items():
         if re.search(pattern, command, re.IGNORECASE):
-            return {"decision": "allow", "message": f"⚠️ 注意: {warning}"}
+            messages.append(f"⚠️ 注意: {warning}")
 
     # 检查是否安装了已知的有问题的包
     suspicious_packages = [
@@ -37,38 +39,45 @@ def check_npm_command(command):
 
     for pkg in suspicious_packages:
         if f"install {pkg}" in command or f"add {pkg}" in command:
-            return {
-                "decision": "allow",
-                "message": f"⚠️ 警告: 包 '{pkg}' 曾有安全问题，请谨慎使用",
-            }
+            messages.append(f"⚠️ 警告: 包 '{pkg}' 曾有安全问题，请谨慎使用")
 
     # 建议使用 npm ci 而不是 npm install 在CI环境
     if "npm install" in command and ("CI" in command or "ci" in command.lower()):
-        return {
-            "decision": "allow",
-            "message": "💡 建议: 在CI环境中使用 'npm ci' 而不是 'npm install' 以获得更快和更可靠的安装",
-        }
+        messages.append(
+            "💡 建议: 在CI环境中使用 'npm ci' 而不是 'npm install' 以获得更快和更可靠的安装"
+        )
 
-    return {"decision": "allow"}
+    return messages
 
 
 def main():
     """主函数"""
-    tool_use_json = sys.stdin.read()
-    tool_use = json.loads(tool_use_json)
+    try:
+        tool_use_json = sys.stdin.read()
+        tool_use = json.loads(tool_use_json)
 
-    if tool_use.get("tool") != "Bash":
-        print(json.dumps({"decision": "allow"}))
-        return
+        # 只处理Bash命令
+        tool = tool_use.get("tool") or tool_use.get("tool_name")
+        if tool != "Bash":
+            sys.exit(0)
 
-    command = tool_use.get("arguments", {}).get("command", "")
+        # 获取命令
+        arguments = tool_use.get("arguments") or tool_use.get("tool_input", {})
+        command = arguments.get("command", "")
 
-    # 检查npm/yarn命令
-    if any(cmd in command for cmd in ["npm", "yarn", "pnpm"]):
-        result = check_npm_command(command)
-        print(json.dumps(result))
-    else:
-        print(json.dumps({"decision": "allow"}))
+        # 检查npm/yarn命令
+        if any(cmd in command for cmd in ["npm", "yarn", "pnpm"]):
+            messages = check_npm_command(command)
+            if messages:
+                # 输出警告到stdout，不阻止操作
+                print("\n".join(messages))
+
+        # 总是允许操作
+        sys.exit(0)
+
+    except Exception:
+        # 错误时不阻止操作
+        sys.exit(0)
 
 
 if __name__ == "__main__":

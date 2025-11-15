@@ -86,24 +86,32 @@ def check_aws_command(command):
 
 def main():
     """主函数"""
-    tool_use_json = sys.stdin.read()
-    tool_use = json.loads(tool_use_json)
+    try:
+        tool_use_json = sys.stdin.read()
+        tool_use = json.loads(tool_use_json)
 
-    if tool_use.get("tool") != "Bash":
-        print(json.dumps({"decision": "allow"}))
-        return
+        # 只处理Bash命令
+        tool = tool_use.get("tool") or tool_use.get("tool_name")
+        if tool != "Bash":
+            sys.exit(0)
 
-    command = tool_use.get("arguments", {}).get("command", "")
+        # 获取命令
+        arguments = tool_use.get("arguments") or tool_use.get("tool_input", {})
+        command = arguments.get("command", "")
 
-    # 检查AWS命令
-    if "aws " in command:
-        messages = check_aws_command(command)
-        if messages:
-            print(json.dumps({"decision": "allow", "message": "\n".join(messages)}))
-        else:
-            print(json.dumps({"decision": "allow"}))
-    else:
-        print(json.dumps({"decision": "allow"}))
+        # 检查AWS命令
+        if "aws " in command:
+            messages = check_aws_command(command)
+            if messages:
+                # 输出警告信息到stdout，不阻止操作
+                print("\n".join(messages))
+
+        # 总是允许操作
+        sys.exit(0)
+
+    except Exception:
+        # 错误时不阻止操作
+        sys.exit(0)
 
 
 if __name__ == "__main__":

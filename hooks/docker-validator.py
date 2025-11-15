@@ -7,10 +7,10 @@ import re
 def validate_docker_command(tool_use):
     """验证Docker命令，防止使用不当的镜像名称后缀"""
 
-    if tool_use.get("tool") != "Bash":
-        return {"decision": "allow"}
+    if tool_use.get("tool_name") != "Bash":
+        sys.exit(0)
 
-    command = tool_use.get("arguments", {}).get("command", "")
+    command = tool_use.get("tool_input", {}).get("command", "")
 
     # 检查是否是docker build命令
     if "docker build" in command or "docker tag" in command:
@@ -27,12 +27,9 @@ def validate_docker_command(tool_use):
                 if image_name.endswith(suffix):
                     clean_name = image_name[: -len(suffix)]
                     tag_part = tag.split(":")[1] if ":" in tag else "latest"
-                    return {
-                        "decision": "block",
-                        "message": f"镜像名称不应使用'{suffix}'后缀。建议使用: {clean_name}:{tag_part}",
-                    }
-
-    return {"decision": "allow"}
+                    error_msg = f"镜像名称不应使用'{suffix}'后缀。建议使用: {clean_name}:{tag_part}"
+                    print(error_msg, file=sys.stderr)
+                    sys.exit(2)  # Exit code 2 = blocking error
 
 
 if __name__ == "__main__":
@@ -40,7 +37,7 @@ if __name__ == "__main__":
     tool_use_json = sys.stdin.read()
     tool_use = json.loads(tool_use_json)
 
-    result = validate_docker_command(tool_use)
+    validate_docker_command(tool_use)
 
-    print(json.dumps(result))
-    sys.exit(0 if result.get("decision") == "allow" else 1)
+    # 如果没有问题，静默退出
+    sys.exit(0)

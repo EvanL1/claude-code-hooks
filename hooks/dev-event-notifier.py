@@ -1,19 +1,14 @@
 #!/usr/bin/env python3
 """
-开发事件通知Hook - 捕获开发事件并发送通知
-支持构建、测试、部署等事件
+开发事件通知Hook - 捕获开发事件并记录日志
+支持构建、测试、部署等事件（简化版本，仅记录）
 """
 
 import sys
 import json
-import subprocess
 import os
 import re
-
-# 通知器二进制文件路径
-NOTIFIER_PATH = os.path.expanduser(
-    "~/.claude/notifiers/claude-notifier/target/release/claude-notifier"
-)
+from datetime import datetime
 
 
 def detect_event_from_command(command):
@@ -49,79 +44,76 @@ def detect_event_from_command(command):
     return None, None
 
 
-def send_notification(event_type, title, content, level="info"):
-    """调用Rust通知器发送通知"""
-    if not os.path.exists(NOTIFIER_PATH):
-        # 如果编译版本不存在，使用cargo run
-        cmd = [
-            "cargo",
-            "run",
-            "--manifest-path",
-            os.path.expanduser("~/.claude/notifiers/claude-notifier/Cargo.toml"),
-            "--",
-            "hook",
-        ]
-    else:
-        cmd = [NOTIFIER_PATH, "hook"]
-
-    data = {"event": event_type, "title": title, "content": content, "level": level}
-
+def log_event(event_type, description, command):
+    """记录事件到日志文件"""
     try:
-        result = subprocess.run(
-            cmd, input=json.dumps(data), capture_output=True, text=True, timeout=5
+        log_dir = os.path.expanduser("~/.claude/logs/events")
+        os.makedirs(log_dir, exist_ok=True)
+
+        log_file = os.path.join(
+            log_dir, f"events_{datetime.now().strftime('%Y%m%d')}.log"
         )
-        return result.returncode == 0
-    except Exception as e:
-        print(f"通知发送失败: {str(e)}", file=sys.stderr)
-        return False
+
+        log_entry = {
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "event_type": event_type,
+            "description": description,
+            "command": command,
+            "user": os.environ.get("USER", "Unknown"),
+            "cwd": os.getcwd(),
+        }
+
+        with open(log_file, "a", encoding="utf-8") as f:
+            f.write(json.dumps(log_entry, ensure_ascii=False) + "\n")
+
+    except Exception:
+        # 日志记录失败不应阻止命令执行
+        pass
 
 
 def main():
     """主函数"""
-    # 从stdin读取hook数据
-    tool_use_json = sys.stdin.read()
-    tool_use = json.loads(tool_use_json)
+    try:
+        # 从stdin读取hook数据
+        tool_use_json = sys.stdin.read()
+        tool_use = json.loads(tool_use_json)
 
-    # 只处理Bash命令
-    if tool_use.get("tool") != "Bash":
-        print(json.dumps({"decision": "allow"}))
-        return
+        # 只处理Bash命令
+        tool = tool_use.get("tool") or tool_use.get("tool_name")
+        if tool != "Bash":
+            sys.exit(0)
 
-    command = tool_use.get("arguments", {}).get("command", "")
+        # 获取命令
+        arguments = tool_use.get("arguments") or tool_use.get("tool_input", {})
+        command = arguments.get("command", "")
 
-    # 检测事件类型
-    event_type, description = detect_event_from_command(command)
+        # 检测事件类型
+        event_type, description = detect_event_from_command(command)
 
-    if event_type:
-        # 获取用户信息
-        user = os.environ.get("USER", "Unknown")
+        if event_type:
+            # 记录事件到日志
+            log_event(event_type, description, command)
 
-        # 构建通知内容
-        title = f"{description} - {user}"
-        content = f"命令: `{command}`\n路径: {os.getcwd()}"
+            # 显示事件信息
+            level_emoji = {
+                "build": "🔨",
+                "test": "🧪",
+                "deploy": "🚀",
+                "code": "💾",
+                "security": "🔒",
+            }
 
-        # 根据事件类型设置级别
-        level = "info"
-        if "deploy" in event_type:
-            level = "warning"
-        elif "security" in event_type:
-            level = "critical"
+            category = event_type.split("_")[0]
+            emoji = level_emoji.get(category, "📝")
+            print(f"{emoji} {description}")
 
-        # 发送通知（异步，不阻塞命令执行）
-        subprocess.Popen(
-            ["python3", __file__, "--send", event_type, title, content, level],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-        )
+        # 始终允许命令执行
+        sys.exit(0)
 
-    # 始终允许命令执行
-    print(json.dumps({"decision": "allow"}))
+    except Exception:
+        # 错误时不阻止操作
+        sys.exit(0)
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1 and sys.argv[1] == "--send":
-        # 独立进程发送通知
-        _, _, event_type, title, content, level = sys.argv
-        send_notification(event_type, title, content, level)
-    else:
-        main()
+    main()

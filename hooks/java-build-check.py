@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Java Build Check Hook - Java构建和代码质量检查
-在Maven/Gradle构建后自动运行代码质量检查
+在Maven/Gradle构建时提供最佳实践建议
 """
 
 import sys
@@ -61,25 +61,32 @@ def check_java_command(command):
 
 def main():
     """主函数"""
-    tool_use_json = sys.stdin.read()
-    tool_use = json.loads(tool_use_json)
+    try:
+        tool_use_json = sys.stdin.read()
+        tool_use = json.loads(tool_use_json)
 
-    if tool_use.get("tool") != "Bash":
-        print(json.dumps({"decision": "allow"}))
-        return
+        # 只处理Bash命令
+        tool = tool_use.get("tool") or tool_use.get("tool_name")
+        if tool != "Bash":
+            sys.exit(0)
 
-    command = tool_use.get("arguments", {}).get("command", "")
+        # 获取命令
+        arguments = tool_use.get("arguments") or tool_use.get("tool_input", {})
+        command = arguments.get("command", "")
 
-    # 检查Java相关命令
-    java_keywords = ["java", "mvn", "gradle", "gradlew", "jar"]
-    if any(keyword in command for keyword in java_keywords):
-        messages = check_java_command(command)
-        if messages:
-            print(json.dumps({"decision": "allow", "message": "\n".join(messages)}))
-        else:
-            print(json.dumps({"decision": "allow"}))
-    else:
-        print(json.dumps({"decision": "allow"}))
+        # 检查Java相关命令
+        java_keywords = ["java", "mvn", "gradle", "gradlew", "jar"]
+        if any(keyword in command for keyword in java_keywords):
+            messages = check_java_command(command)
+            if messages:
+                print("\n".join(messages))
+
+        # 总是允许操作
+        sys.exit(0)
+
+    except Exception:
+        # 错误时不阻止操作
+        sys.exit(0)
 
 
 if __name__ == "__main__":

@@ -1,209 +1,219 @@
-# Claude Code Hooks Collection 🪝
+# Dev Workflow Hooks for Claude Code
 
 [English](#english) | [中文](#中文)
 
-A comprehensive collection of useful hooks for Claude Code to enhance your development workflow. These hooks provide safety checks, automation, notifications, and improved developer experience.
+A comprehensive collection of powerful hooks for Claude Code to enhance your development workflow.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/yourusername/claude-code-hooks/pulls)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/EvanL1/claude-code-hooks/pulls)
 
-## ✨ Features
+## Features
 
-- 🛡️ **Safety First**: Protect against dangerous operations
-- 🤖 **Automation**: Auto-format code, check dependencies
-- 📊 **Analytics**: File statistics and command logging
-- 🎨 **Enhanced UI**: Beautiful terminal interface
-- 🔔 **Notifications**: Integration with [claude-notifier](https://github.com/EvanL1/claude-notifier)
-- 🔧 **Extensible**: Easy to add custom hooks
+- Safety First: Protect against dangerous operations with 6 blocking hooks
+- Automation: Auto-format code, check dependencies with 3 tool hooks
+- Analytics: File statistics and command logging
+- Enhanced UI: Beautiful terminal interface
+- Notifications: Integration with claude-notifier
+- Extensible: Easy to add custom hooks
 
-## 📦 Quick Start
+## Quick Start
 
 ### One-line Install
 
-```bash
-curl -sSL https://raw.githubusercontent.com/yourusername/claude-code-hooks/main/install.sh | bash
-```
+curl -sSL https://raw.githubusercontent.com/EvanL1/claude-code-hooks/main/install.sh | bash
 
 ### Manual Install
 
-```bash
-git clone https://github.com/yourusername/claude-code-hooks.git
-cd claude-code-hooks
+git clone https://github.com/EvanL1/claude-code-hooks.git
+cd dev-workflow-hooks
 ./install.sh
-```
 
-## 🪝 Available Hooks
+## Hook Overview - 15 Total Hooks
 
-### 1. 🎨 Terminal UI Enhancement (`terminal-ui.sh`)
-Beautiful terminal interface with time, path, and mode display.
+### Blocking Hooks (6) - Enforce safety rules
+1. rust-mod-restriction - Prevent mod.rs creation
+2. naming-restrictions - Enforce naming conventions  
+3. python-uv-enforcer - Enforce uv for Python
+4. git-safety-check - Protect main branches
+5. commit-message-filter - Filter auto-generated commits
+6. docker-validator - Validate Docker naming
 
-### 2. 🐳 Docker Validator (`docker-validator.py`)
-- Prevents bad image naming patterns (e.g., `-v2`, `-test`)
-- Enforces proper tagging conventions
+### Warning Hooks (4) - Best practices
+7. aws-safety-check - Cloud operation warnings
+8. npm-safety-check - Package alerts
+9. cargo-auto-format - Rust reminders
+10. java-build-check - Java best practices
 
-### 3. 📊 File Statistics (`file-stats.py`)
-- Shows line count, character count, functions, and classes
-- Triggered after file modifications
+### Audit Hooks (3) - Logging
+11. file-stats - File statistics
+12. command-logger - Command audit
+13. dev-event-notifier - Event notifications
 
-### 4. 🦀 Cargo Auto Format (`cargo-auto-format.py`)
-- Reminds to run `cargo fmt` and `cargo clippy`
-- Triggered on Rust builds
+### UI Enhancement (1)
+14. terminal-ui - Terminal interface
 
-### 5. 🔒 Git Safety Check (`git-safety-check.py`)
-- Protects main branches from deletion
-- Warns about force push and hard reset
-- Alerts on sensitive file commits
+### Event Support (1)
+15. dev-event-notifier - Notifications
 
-### 6. 📦 NPM Safety Check (`npm-safety-check.py`)
-- Warns about publishing operations
-- Alerts on problematic packages
-- Suggests `npm ci` for CI environments
+## Configuration
 
-### 7. ☕ Java Build Check (`java-build-check.py`)
-- Recommends using wrapper scripts
-- Warns when skipping tests
-- Provides JVM optimization tips
+Hooks are configured in ~/.config/claude-code/settings.json
 
-### 8. ☁️ AWS Safety Check (`aws-safety-check.py`)
-- Warns about destructive operations
-- Detects production environment actions
-- Alerts on public S3 permissions
-- Cost operation reminders
+See settings-template.json for complete examples.
 
-### 9. 📝 Command Logger (`command-logger.py`)
-- Logs all commands to `~/.claude/logs/`
-- Useful for auditing and debugging
+## Contributing
 
-### 10. 🚫 Commit Message Filter (`commit-message-filter.py`)
-- Blocks auto-generated commit signatures
-- Enforces custom commit messages
+Contributions welcome! Submit Pull Requests.
 
-### 11. 🔔 Dev Event Notifier (`dev-event-notifier.py`)
-- Sends notifications for build/test/deploy events
-- Integrates with [claude-notifier](https://github.com/EvanL1/claude-notifier)
+## License
 
-## ⚙️ Configuration
+MIT License - See LICENSE file
 
-Hooks are configured in `~/.config/claude-code/settings.json`:
+---
 
-```json
+# Dev Workflow Hooks for Claude Code (Chinese)
+
+一套完整的 Claude Code hooks 集合，用于增强开发工作流程。
+
+## 特性
+
+- 安全第一：6个阻止型hooks强制执行安全规范
+- 自动化：3个工具型hooks用于代码自动格式化
+- 分析统计：文件统计和命令审计记录
+- 增强界面：美化的终端界面
+- 通知集成：与 claude-notifier 集成
+- 可扩展：轻松添加自定义 hooks
+
+## 快速开始
+
+### 一键安装
+
+curl -sSL https://raw.githubusercontent.com/EvanL1/claude-code-hooks/main/install.sh | bash
+
+### 手动安装
+
+git clone https://github.com/EvanL1/claude-code-hooks.git
+cd dev-workflow-hooks
+./install.sh
+
+## Hook 概览 - 共15个
+
+### 阻止型Hooks（6个）- 强制执行安全规范
+1. rust-mod-restriction - 防止创建mod.rs文件
+2. naming-restrictions - 强制执行命名规范
+3. python-uv-enforcer - 强制使用uv工具
+4. git-safety-check - 保护主分支
+5. commit-message-filter - 过滤自动生成的提交消息
+6. docker-validator - 验证Docker镜像命名
+
+### 警告型Hooks（4个）- 提供最佳实践建议
+7. aws-safety-check - 云操作安全提醒
+8. npm-safety-check - 包管理器操作警告
+9. cargo-auto-format - Rust格式化提醒
+10. java-build-check - Java构建最佳实践
+
+### 审计型Hooks（3个）- 日志记录和统计
+11. file-stats - 显示文件统计信息
+12. command-logger - 记录所有执行的命令
+13. dev-event-notifier - 构建/测试/部署事件通知
+
+### UI增强型（1个）
+14. terminal-ui - 美化的终端界面
+
+### 事件型Hooks（1个）
+15. dev-event-notifier - 事件通知系统
+
+## 配置
+
+在 ~/.config/claude-code/settings.json 或 .claude/settings.json 中配置hooks
+
+详见 settings-template.json 获取完整配置示例。
+
+## 许可证
+
+本项目采用 MIT 许可证
+
+---
+
+## Hook Technical Details
+
+### Configuration & Customization
+
+Hooks are configured in ~/.config/claude-code/settings.json
+
+Example configuration:
 {
   "hooks": {
-    "UserPromptSubmit": [...],
-    "PreToolUse": [...],
-    "PostToolUse": [...]
+    "matchers": [
+      {
+        "name": "rust-mod-restriction",
+        "hook": "${CLAUDE_PLUGIN_ROOT}/hooks/rust-mod-restriction.py",
+        "matcher": "Write|Edit|MultiEdit"
+      },
+      {
+        "name": "naming-restrictions",
+        "hook": "${CLAUDE_PLUGIN_ROOT}/hooks/naming-restrictions.py",
+        "matcher": "Write|Edit|MultiEdit|Bash"
+      }
+    ]
   }
 }
-```
 
-See [examples/settings.json](examples/settings.json) for a complete configuration example.
+### Hook Exit Codes
 
-## 🔧 Customization
+- Exit Code 0: Allow operation
+- Exit Code 2: Block operation
 
 ### Disable Specific Hooks
 
-Remove or comment out hooks in your `settings.json`.
+Remove or comment out hooks in settings.json
 
 ### Disable All Hooks Temporarily
 
-```bash
-claude-code --no-hooks
-# or
 export CLAUDE_CODE_NO_HOOKS=1
-```
 
 ### Create Custom Hooks
 
-1. Create a script in `~/.claude/hooks/`
-2. Make it executable: `chmod +x your-hook.py`
-3. Add to `settings.json`
+1. Create script in ~/.claude/hooks/
+2. Make executable: chmod +x your-hook.py
+3. Add to settings.json
 
-Hook scripts receive tool usage data via stdin and should output JSON:
+Hook scripts receive tool usage data via stdin:
 
-```python
 #!/usr/bin/env python3
 import sys
 import json
 
 tool_use = json.loads(sys.stdin.read())
 # Your logic here
-print(json.dumps({"decision": "allow"}))
-```
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-hook`)
-3. Commit your changes (`git commit -m 'Add amazing hook'`)
-4. Push to the branch (`git push origin feature/amazing-hook`)
-5. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- Built for [Claude Code](https://claude.ai/code) by the community
-- Notification support via [claude-notifier](https://github.com/EvanL1/claude-notifier)
+exit(0)  # Allow
 
 ---
 
-<a name="中文"></a>
+## Features Summary
 
-# Claude Code Hooks 集合 🪝
+15 Total Hooks with:
+- 6 blocking hooks for strict safety
+- 4 warning hooks for best practices
+- 3 audit hooks for logging
+- 1 UI enhancement hook
+- 1 event notification hook
 
-一套全面的 Claude Code hooks 集合，用于增强您的开发工作流程。这些 hooks 提供安全检查、自动化、通知和改进的开发体验。
+Exit code 2 mechanism: Simple, reliable, and effective
 
-## ✨ 特性
+---
 
-- 🛡️ **安全第一**：防止危险操作
-- 🤖 **自动化**：自动格式化代码、检查依赖
-- 📊 **分析统计**：文件统计和命令日志
-- 🎨 **增强界面**：美化的终端界面
-- 🔔 **通知集成**：与 [claude-notifier](https://github.com/EvanL1/claude-notifier) 集成
-- 🔧 **可扩展**：轻松添加自定义 hooks
+## Contributing
 
-## 📦 快速开始
+Fork the repository and submit pull requests at:
+https://github.com/EvanL1/claude-code-hooks
 
-### 一键安装
+---
 
-```bash
-curl -sSL https://raw.githubusercontent.com/yourusername/claude-code-hooks/main/install.sh | bash
-```
+## License
 
-### 手动安装
+MIT License - See LICENSE file
 
-```bash
-git clone https://github.com/yourusername/claude-code-hooks.git
-cd claude-code-hooks
-./install.sh
-```
+For more information and updates, visit:
+https://github.com/EvanL1/claude-code-hooks
 
-## 🪝 可用的 Hooks
-
-1. **终端UI美化** - 美化的终端界面显示
-2. **Docker验证器** - 防止不规范的镜像命名
-3. **文件统计** - 显示文件统计信息
-4. **Cargo自动格式化** - Rust代码格式化提醒
-5. **Git安全检查** - 保护重要分支和敏感文件
-6. **NPM安全检查** - 包管理器操作警告
-7. **Java构建检查** - Maven/Gradle最佳实践
-8. **AWS安全检查** - 云操作安全提醒
-9. **命令日志** - 记录所有执行的命令
-10. **提交消息过滤** - 过滤自动生成的提交信息
-11. **开发事件通知** - 构建/测试/部署通知
-
-## ⚙️ 配置
-
-详见 [examples/settings.json](examples/settings.json) 获取完整配置示例。
-
-## 🤝 贡献
-
-欢迎贡献！请随时提交 Pull Request。
-
-## 📝 许可证
-
-本项目采用 MIT 许可证 - 详见 [LICENSE](LICENSE) 文件。

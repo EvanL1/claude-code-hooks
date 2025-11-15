@@ -24,12 +24,11 @@ def check_commit_message(command):
     if "git commit" in command:
         for pattern in blocked_patterns:
             if re.search(pattern, command, re.IGNORECASE | re.MULTILINE):
-                return {
-                    "decision": "block",
-                    "message": "❌ 提交消息包含自动生成的Claude标识，请使用自定义的提交消息",
-                }
-
-    return {"decision": "allow"}
+                error_msg = (
+                    "❌ 提交消息包含自动生成的Claude标识，请使用自定义的提交消息"
+                )
+                print(error_msg, file=sys.stderr)
+                sys.exit(2)  # Exit code 2 = blocking error
 
 
 def main():
@@ -39,15 +38,16 @@ def main():
     tool_use = json.loads(tool_use_json)
 
     # 只处理Bash命令
-    if tool_use.get("tool") != "Bash":
-        print(json.dumps({"decision": "allow"}))
-        return
+    if tool_use.get("tool_name") != "Bash":
+        sys.exit(0)
 
-    command = tool_use.get("arguments", {}).get("command", "")
+    command = tool_use.get("tool_input", {}).get("command", "")
 
     # 检查提交消息
-    result = check_commit_message(command)
-    print(json.dumps(result))
+    check_commit_message(command)
+
+    # 如果没有问题，静默退出
+    sys.exit(0)
 
 
 if __name__ == "__main__":
