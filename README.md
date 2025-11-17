@@ -2,218 +2,810 @@
 
 [English](#english) | [中文](#中文)
 
-A comprehensive collection of powerful hooks for Claude Code to enhance your development workflow.
+<a name="english"></a>
+
+## English Version
+
+### Overview
+
+A comprehensive collection of 15 Git hooks designed to enforce development standards, best practices, and security protocols in Claude Code projects. These hooks provide automated validation, auditing, and terminal beautification to ensure code quality and consistency across your development workflow.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/EvanL1/claude-code-hooks/pulls)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/EvanL1/claude-code-hooks)
+[![GitHub](https://img.shields.io/badge/GitHub-EvanL1-blue.svg)](https://github.com/EvanL1/claude-code-hooks)
 
-## Features
+### Features
 
-- Safety First: Protect against dangerous operations with 6 blocking hooks
-- Automation: Auto-format code, check dependencies with 3 tool hooks
-- Analytics: File statistics and command logging
-- Enhanced UI: Beautiful terminal interface
-- Notifications: Integration with claude-notifier
-- Extensible: Easy to add custom hooks
+The hook collection consists of 15 specialized validation and audit hooks:
 
-## Quick Start
+- **6 Blocking Hooks** - Enforce critical safety and naming standards
+- **4 Warning Hooks** - Recommend best practices with alerts
+- **3 Audit Hooks** - Log operations and provide statistics
+- **1 UI Hook** - Beautify terminal output
+- **Exit Code 2** - Fail gracefully with meaningful status codes
 
-### One-line Install
+### Quick Start
 
-curl -sSL https://raw.githubusercontent.com/EvanL1/claude-code-hooks/main/install.sh | bash
+#### One-Line Installation
 
-### Manual Install
+```bash
+curl -sSL https://raw.githubusercontent.com/EvanL1/claude-code-hooks/master/install.sh | bash
+```
 
+#### Manual Installation
+
+```bash
 git clone https://github.com/EvanL1/claude-code-hooks.git
-cd dev-workflow-hooks
+cd claude-code-hooks
 ./install.sh
+```
 
-## Hook Overview - 15 Total Hooks
+### Hooks Reference
 
-### Blocking Hooks (6) - Enforce safety rules
-1. rust-mod-restriction - Prevent mod.rs creation
-2. naming-restrictions - Enforce naming conventions  
-3. python-uv-enforcer - Enforce uv for Python
-4. git-safety-check - Protect main branches
-5. commit-message-filter - Filter auto-generated commits
-6. docker-validator - Validate Docker naming
+#### Blocking Hooks (6)
 
-### Warning Hooks (4) - Best practices
-7. aws-safety-check - Cloud operation warnings
-8. npm-safety-check - Package alerts
-9. cargo-auto-format - Rust reminders
-10. java-build-check - Java best practices
+##### 1. rust-mod-restriction
 
-### Audit Hooks (3) - Logging
-11. file-stats - File statistics
-12. command-logger - Command audit
-13. dev-event-notifier - Event notifications
+**Purpose:** Enforce Rust module organization standards
 
-### UI Enhancement (1)
-14. terminal-ui - Terminal interface
+**Behavior:**
+- Blocks creation and editing of `mod.rs` files
+- Prevents non-standard Rust module structure
+- Enforces modern Rust best practices
 
-### Event Support (1)
-15. dev-event-notifier - Notifications
+**Example:**
+```bash
+# This will be blocked:
+touch src/utils/mod.rs
 
-## Configuration
-
-Hooks are configured in ~/.config/claude-code/settings.json
-
-See settings-template.json for complete examples.
-
-## Contributing
-
-Contributions welcome! Submit Pull Requests.
-
-## License
-
-MIT License - See LICENSE file
+# Suggested approach:
+# Use lib.rs or main.rs with pub mod declarations
+```
 
 ---
 
-# Dev Workflow Hooks for Claude Code (Chinese)
+##### 2. naming-restrictions
 
-一套完整的 Claude Code hooks 集合，用于增强开发工作流程。
+**Purpose:** Ensure descriptive and meaningful file names
 
-## 特性
+**Behavior:**
+- Blocks generic names: `test.py`, `temp1.txt`, `foo.py`, `v1.py`, etc.
+- Requires context-specific naming conventions
+- Fails fast with clear error messages
 
-- 安全第一：6个阻止型hooks强制执行安全规范
-- 自动化：3个工具型hooks用于代码自动格式化
-- 分析统计：文件统计和命令审计记录
-- 增强界面：美化的终端界面
-- 通知集成：与 claude-notifier 集成
-- 可扩展：轻松添加自定义 hooks
+**Example:**
+```bash
+# Blocked names:
+test.py, temp.txt, data.json, v2.py, foo.js
 
-## 快速开始
-
-### 一键安装
-
-curl -sSL https://raw.githubusercontent.com/EvanL1/claude-code-hooks/main/install.sh | bash
-
-### 手动安装
-
-git clone https://github.com/EvanL1/claude-code-hooks.git
-cd dev-workflow-hooks
-./install.sh
-
-## Hook 概览 - 共15个
-
-### 阻止型Hooks（6个）- 强制执行安全规范
-1. rust-mod-restriction - 防止创建mod.rs文件
-2. naming-restrictions - 强制执行命名规范
-3. python-uv-enforcer - 强制使用uv工具
-4. git-safety-check - 保护主分支
-5. commit-message-filter - 过滤自动生成的提交消息
-6. docker-validator - 验证Docker镜像命名
-
-### 警告型Hooks（4个）- 提供最佳实践建议
-7. aws-safety-check - 云操作安全提醒
-8. npm-safety-check - 包管理器操作警告
-9. cargo-auto-format - Rust格式化提醒
-10. java-build-check - Java构建最佳实践
-
-### 审计型Hooks（3个）- 日志记录和统计
-11. file-stats - 显示文件统计信息
-12. command-logger - 记录所有执行的命令
-13. dev-event-notifier - 构建/测试/部署事件通知
-
-### UI增强型（1个）
-14. terminal-ui - 美化的终端界面
-
-### 事件型Hooks（1个）
-15. dev-event-notifier - 事件通知系统
-
-## 配置
-
-在 ~/.config/claude-code/settings.json 或 .claude/settings.json 中配置hooks
-
-详见 settings-template.json 获取完整配置示例。
-
-## 许可证
-
-本项目采用 MIT 许可证
+# Suggested names:
+test_user_authentication.py, draft_proposal_2024.txt, user_data.json, payment_service_v2.py, api_router.js
+```
 
 ---
 
-## Hook Technical Details
+##### 3. python-uv-enforcer
 
-### Configuration & Customization
+**Purpose:** Standardize Python package management with `uv`
 
-Hooks are configured in ~/.config/claude-code/settings.json
+**Behavior:**
+- Blocks direct usage of `pip`, `python`, `pytest`
+- Enforces `uv` as the standard Python tool
+- Ensures consistent environment management
 
-Example configuration:
+**Example:**
+```bash
+# Blocked:
+pip install requests
+python script.py
+pytest tests/
+
+# Use instead:
+uv pip install requests
+uv run python script.py
+uv run pytest tests/
+```
+
+---
+
+##### 4. git-safety-check
+
+**Purpose:** Protect critical branches from accidental deletion or forced updates
+
+**Behavior:**
+- Prevents branch deletion on: `main`, `master`, `production`, `prod`
+- Protects from dangerous git operations
+- Maintains branch integrity
+
+**Protected Branches:**
+- `main`
+- `master`
+- `production`
+- `prod`
+
+---
+
+##### 5. commit-message-filter
+
+**Purpose:** Ensure meaningful, custom commit messages
+
+**Behavior:**
+- Blocks auto-generated commit messages
+- Enforces intentional commit messaging
+- Prevents pollution of commit history
+
+**Filtered Messages:**
+- Messages containing "Generated with Claude Code"
+- Auto-generated messages without customization
+
+---
+
+##### 6. docker-validator
+
+**Purpose:** Enforce Docker image naming standards
+
+**Behavior:**
+- Blocks invalid Docker image name patterns
+- Prevents outdated versioning practices
+- Enforces semantic versioning with tags
+
+**Blocked Patterns:**
+```
+Images with -v2, -v3, -test, -dev, -prod suffixes
+Examples: myapp-v2, backend-test, frontend-prod
+```
+
+**Recommended Approach:**
+```
+# Use tags for versioning:
+myapp:1.0
+myapp:latest
+backend-service:prod
+frontend:dev
+api-gateway:stable
+```
+
+---
+
+#### Warning Hooks (4)
+
+##### 7. aws-safety-check
+
+**Purpose:** Alert on potentially dangerous AWS operations
+
+**Behavior:**
+- Warns before destructive AWS operations
+- Recommends review of command parameters
+- Provides safety confirmations
+
+---
+
+##### 8. npm-safety-check
+
+**Purpose:** Prevent common NPM/Yarn mistakes
+
+**Behavior:**
+- Warns about npm install without lock files
+- Suggests best practices for dependency management
+- Alerts on deprecated packages
+
+---
+
+##### 9. cargo-auto-format
+
+**Purpose:** Encourage Rust code formatting standards
+
+**Behavior:**
+- Reminds to run `cargo fmt`
+- Enforces consistent code style
+- Suggests `cargo clippy` for linting
+
+---
+
+##### 10. java-build-check
+
+**Purpose:** Promote Java build best practices
+
+**Behavior:**
+- Warns about missing tests before build
+- Suggests Maven/Gradle best practices
+- Alerts on common configuration issues
+
+---
+
+#### Audit Hooks (3)
+
+##### 11. file-stats
+
+**Purpose:** Collect and report file operation statistics
+
+**Behavior:**
+- Logs all file operations
+- Provides statistics on modifications
+- Generates audit reports
+
+---
+
+##### 12. command-logger
+
+**Purpose:** Maintain comprehensive command audit trail
+
+**Behavior:**
+- Records all executed commands
+- Logs command parameters and results
+- Creates searchable audit logs
+
+---
+
+##### 13. dev-event-notifier
+
+**Purpose:** Send notifications for important development events
+
+**Behavior:**
+- Alerts on critical operations
+- Notifies of hook violations
+- Provides event statistics
+
+---
+
+#### UI Hook (1)
+
+##### 14. terminal-ui
+
+**Purpose:** Enhance terminal output with visual formatting
+
+**Behavior:**
+- Beautifies error and warning messages
+- Adds color coding for different message types
+- Improves readability of console output
+
+---
+
+### Configuration
+
+The hooks are configured via the `.claude/claude.hook` configuration file:
+
+```json
 {
   "hooks": {
     "matchers": [
       {
         "name": "rust-mod-restriction",
-        "hook": "${CLAUDE_PLUGIN_ROOT}/hooks/rust-mod-restriction.py",
+        "hook": "./hooks/rust-mod-restriction.py",
         "matcher": "Write|Edit|MultiEdit"
       },
       {
         "name": "naming-restrictions",
-        "hook": "${CLAUDE_PLUGIN_ROOT}/hooks/naming-restrictions.py",
-        "matcher": "Write|Edit|MultiEdit|Bash"
+        "hook": "./hooks/naming-restrictions.py",
+        "matcher": "Write|Edit"
+      },
+      {
+        "name": "python-uv-enforcer",
+        "hook": "./hooks/python-uv-enforcer.py",
+        "matcher": "Bash"
+      },
+      {
+        "name": "git-safety-check",
+        "hook": "./hooks/git-safety-check.py",
+        "matcher": "Bash"
+      },
+      {
+        "name": "commit-message-filter",
+        "hook": "./hooks/commit-message-filter.py",
+        "matcher": "Bash"
+      },
+      {
+        "name": "docker-validator",
+        "hook": "./hooks/docker-validator.py",
+        "matcher": "Bash|Write|Edit"
       }
     ]
   }
 }
+```
 
-### Hook Exit Codes
+### Customization
 
-- Exit Code 0: Allow operation
-- Exit Code 2: Block operation
+#### Modify Protected Branches
 
-### Disable Specific Hooks
+Edit the `git-safety-check.py` hook to add or remove protected branches:
 
-Remove or comment out hooks in settings.json
+```python
+PROTECTED_BRANCHES = ['main', 'master', 'production', 'prod', 'develop']
+```
 
-### Disable All Hooks Temporarily
+#### Adjust Naming Rules
 
-export CLAUDE_CODE_NO_HOOKS=1
+Customize blocked names in `naming-restrictions.py`:
 
-### Create Custom Hooks
+```python
+BLOCKED_PATTERNS = ['test', 'temp', 'foo', 'v[0-9]+', 'untitled']
+```
 
-1. Create script in ~/.claude/hooks/
-2. Make executable: chmod +x your-hook.py
-3. Add to settings.json
+#### Disable Specific Hooks
 
-Hook scripts receive tool usage data via stdin:
+Comment out hooks in `.claude/claude.hook` to disable them:
 
-#!/usr/bin/env python3
-import sys
-import json
+```json
+{
+  "matchers": [
+    {
+      "name": "rust-mod-restriction",
+      "hook": "./hooks/rust-mod-restriction.py",
+      "matcher": "Write|Edit|MultiEdit",
+      "enabled": false
+    }
+  ]
+}
+```
 
-tool_use = json.loads(sys.stdin.read())
-# Your logic here
-exit(0)  # Allow
+#### Customize Docker Rules
+
+Modify patterns in `docker-validator.py`:
+
+```python
+BLOCKED_SUFFIXES = ['-v2', '-v3', '-test', '-dev', '-prod']
+```
+
+### Examples
+
+#### Example: Running Python with uv
+
+```bash
+# Before (would be blocked):
+pip install requests
+python main.py
+
+# After:
+uv pip install requests
+uv run python main.py
+```
+
+#### Example: Creating Docker Images
+
+```bash
+# Before (would be blocked):
+docker build -t myimage with suffix patterns .
+
+# After:
+docker build -t myimage:2.0 .
+docker tag myimage:2.0 myimage:latest
+```
+
+#### Example: Naming Files Correctly
+
+```bash
+# Before (would be blocked):
+touch test.py
+touch temp1.txt
+
+# After:
+touch test_user_auth.py
+touch temp_migration_proposal.txt
+```
+
+### Contributing
+
+Contributions are welcome! Please follow these guidelines:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-hook`)
+3. Commit your changes
+4. Push to your branch
+5. Submit a Pull Request
+
+### License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+### Support
+
+For issues, questions, or suggestions:
+- Open an issue on [GitHub](https://github.com/EvanL1/claude-code-hooks/issues)
+- Check existing documentation and examples
+- Review hook source code for detailed behavior
 
 ---
 
-## Features Summary
+<a name="中文"></a>
 
-15 Total Hooks with:
-- 6 blocking hooks for strict safety
-- 4 warning hooks for best practices
-- 3 audit hooks for logging
-- 1 UI enhancement hook
-- 1 event notification hook
+## 中文版本
 
-Exit code 2 mechanism: Simple, reliable, and effective
+### 项目概述
+
+一套包含 15 个 Git 钩子的综合解决方案，旨在为 Claude Code 项目强制执行开发规范、最佳实践和安全协议。这些钩子提供自动化验证、审计和终端美化功能，确保代码质量和开发工作流的一致性。
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/EvanL1/claude-code-hooks)
+[![GitHub](https://img.shields.io/badge/GitHub-EvanL1-blue.svg)](https://github.com/EvanL1/claude-code-hooks)
+
+### 特性
+
+钩子集合包括 15 个专门的验证和审计钩子：
+
+- **6 个阻止钩子** - 强制执行关键的安全和命名标准
+- **4 个警告钩子** - 提示最佳实践的建议
+- **3 个审计钩子** - 记录操作和提供统计信息
+- **1 个 UI 钩子** - 美化终端输出
+- **退出代码 2** - 以有意义的状态代码优雅地失败
+
+### 快速开始
+
+#### 一行命令安装
+
+```bash
+curl -sSL https://raw.githubusercontent.com/EvanL1/claude-code-hooks/master/install.sh | bash
+```
+
+#### 手动安装
+
+```bash
+git clone https://github.com/EvanL1/claude-code-hooks.git
+cd claude-code-hooks
+./install.sh
+```
+
+### 钩子参考
+
+#### 阻止钩子（6 个）
+
+##### 1. rust-mod-restriction
+
+**用途：** 强制执行 Rust 模块组织标准
+
+**行为：**
+- 阻止创建和编辑 `mod.rs` 文件
+- 防止非标准的 Rust 模块结构
+- 强制采用现代 Rust 最佳实践
+
+**示例：**
+```bash
+# 这将被阻止：
+touch src/utils/mod.rs
+
+# 建议做法：
+# 在 lib.rs 或 main.rs 中使用 pub mod 声明
+```
 
 ---
 
-## Contributing
+##### 2. naming-restrictions
 
-Fork the repository and submit pull requests at:
-https://github.com/EvanL1/claude-code-hooks
+**用途：** 确保文件名具有描述性和意义
+
+**行为：**
+- 阻止通用名称：`test.py`、`temp1.txt`、`foo.py`、`v1.py` 等
+- 要求符合上下文的命名约定
+- 快速失败并显示清晰的错误消息
+
+**示例：**
+```bash
+# 被阻止的名称：
+test.py, temp.txt, data.json, v2.py, foo.js
+
+# 建议的名称：
+test_user_authentication.py, draft_proposal_2024.txt, user_data.json, payment_service_v2.py, api_router.js
+```
 
 ---
 
-## License
+##### 3. python-uv-enforcer
 
-MIT License - See LICENSE file
+**用途：** 使用 `uv` 标准化 Python 包管理
 
-For more information and updates, visit:
-https://github.com/EvanL1/claude-code-hooks
+**行为：**
+- 阻止直接使用 `pip`、`python`、`pytest`
+- 强制使用 `uv` 作为标准 Python 工具
+- 确保一致的环境管理
 
+**示例：**
+```bash
+# 被阻止：
+pip install requests
+python script.py
+pytest tests/
+
+# 改用：
+uv pip install requests
+uv run python script.py
+uv run pytest tests/
+```
+
+---
+
+##### 4. git-safety-check
+
+**用途：** 保护关键分支免遭意外删除或强制更新
+
+**行为：**
+- 防止删除分支：`main`、`master`、`production`、`prod`
+- 保护免受危险的 git 操作
+- 维护分支完整性
+
+**受保护的分支：**
+- `main`
+- `master`
+- `production`
+- `prod`
+
+---
+
+##### 5. commit-message-filter
+
+**用途：** 确保有意义的自定义提交消息
+
+**行为：**
+- 阻止自动生成的提交消息
+- 强制有意图的提交消息
+- 防止污染提交历史
+
+**被过滤的消息：**
+- 包含 "Generated with Claude Code" 的消息
+- 没有自定义的自动生成消息
+
+---
+
+##### 6. docker-validator
+
+**用途：** 强制执行 Docker 镜像命名标准
+
+**行为：**
+- 阻止无效的 Docker 镜像名称模式
+- 防止过时的版本管理做法
+- 强制使用带标签的语义版本控制
+
+**被阻止的模式：**
+```
+带有-v2、-v3、-test、-dev、-prod后缀的镜像
+示例：myapp-v2、backend-test、frontend-prod
+```
+
+**推荐做法：**
+```
+# 使用标签进行版本控制：
+myapp:1.0
+myapp:latest
+backend-service:prod
+frontend:dev
+api-gateway:stable
+```
+
+---
+
+#### 警告钩子（4 个）
+
+##### 7. aws-safety-check
+
+**用途：** 对可能危险的 AWS 操作发出警告
+
+**行为：**
+- 在破坏性 AWS 操作前发出警告
+- 建议检查命令参数
+- 提供安全确认
+
+---
+
+##### 8. npm-safety-check
+
+**用途：** 防止常见的 NPM/Yarn 错误
+
+**行为：**
+- 警告没有锁定文件的 npm 安装
+- 建议依赖项管理最佳实践
+- 警告已弃用的包
+
+---
+
+##### 9. cargo-auto-format
+
+**用途：** 推荐 Rust 代码格式化标准
+
+**行为：**
+- 提醒运行 `cargo fmt`
+- 强制一致的代码风格
+- 建议使用 `cargo clippy` 进行代码检查
+
+---
+
+##### 10. java-build-check
+
+**用途：** 推荐 Java 构建最佳实践
+
+**行为：**
+- 警告构建前缺少测试
+- 建议 Maven/Gradle 最佳实践
+- 警告常见的配置问题
+
+---
+
+#### 审计钩子（3 个）
+
+##### 11. file-stats
+
+**用途：** 收集和报告文件操作统计
+
+**行为：**
+- 记录所有文件操作
+- 提供修改统计
+- 生成审计报告
+
+---
+
+##### 12. command-logger
+
+**用途：** 维护完整的命令审计跟踪
+
+**行为：**
+- 记录所有执行的命令
+- 记录命令参数和结果
+- 创建可搜索的审计日志
+
+---
+
+##### 13. dev-event-notifier
+
+**用途：** 发送重要开发事件的通知
+
+**行为：**
+- 关键操作的警报
+- 钩子违规通知
+- 事件统计
+
+---
+
+#### UI 钩子（1 个）
+
+##### 14. terminal-ui
+
+**用途：** 使用视觉格式增强终端输出
+
+**行为：**
+- 美化错误和警告消息
+- 为不同消息类型添加颜色编码
+- 改进控制台输出的可读性
+
+---
+
+### 配置
+
+钩子通过 `.claude/claude.hook` 配置文件进行配置：
+
+```json
+{
+  "hooks": {
+    "matchers": [
+      {
+        "name": "rust-mod-restriction",
+        "hook": "./hooks/rust-mod-restriction.py",
+        "matcher": "Write|Edit|MultiEdit"
+      },
+      {
+        "name": "naming-restrictions",
+        "hook": "./hooks/naming-restrictions.py",
+        "matcher": "Write|Edit"
+      },
+      {
+        "name": "python-uv-enforcer",
+        "hook": "./hooks/python-uv-enforcer.py",
+        "matcher": "Bash"
+      },
+      {
+        "name": "git-safety-check",
+        "hook": "./hooks/git-safety-check.py",
+        "matcher": "Bash"
+      },
+      {
+        "name": "commit-message-filter",
+        "hook": "./hooks/commit-message-filter.py",
+        "matcher": "Bash"
+      },
+      {
+        "name": "docker-validator",
+        "hook": "./hooks/docker-validator.py",
+        "matcher": "Bash|Write|Edit"
+      }
+    ]
+  }
+}
+```
+
+### 自定义
+
+#### 修改受保护的分支
+
+编辑 `git-safety-check.py` 钩子以添加或删除受保护的分支：
+
+```python
+PROTECTED_BRANCHES = ['main', 'master', 'production', 'prod', 'develop']
+```
+
+#### 调整命名规则
+
+自定义 `naming-restrictions.py` 中的被阻止名称：
+
+```python
+BLOCKED_PATTERNS = ['test', 'temp', 'foo', 'v[0-9]+', 'untitled']
+```
+
+#### 禁用特定钩子
+
+在 `.claude/claude.hook` 中注释钩子以禁用它们：
+
+```json
+{
+  "matchers": [
+    {
+      "name": "rust-mod-restriction",
+      "hook": "./hooks/rust-mod-restriction.py",
+      "matcher": "Write|Edit|MultiEdit",
+      "enabled": false
+    }
+  ]
+}
+```
+
+#### 自定义 Docker 规则
+
+修改 `docker-validator.py` 中的模式：
+
+```python
+BLOCKED_SUFFIXES = ['-v2', '-v3', '-test', '-dev', '-prod']
+```
+
+### 示例
+
+#### 示例：使用 uv 运行 Python
+
+```bash
+# 之前（会被阻止）：
+pip install requests
+python main.py
+
+# 之后：
+uv pip install requests
+uv run python main.py
+```
+
+#### 示例：创建 Docker 镜像
+
+```bash
+# 之前（会被阻止）：
+docker build -t myimage with problematic suffixes .
+
+# 之后：
+docker build -t myimage:2.0 .
+docker tag myimage:2.0 myimage:latest
+```
+
+#### 示例：正确命名文件
+
+```bash
+# 之前（会被阻止）：
+touch test.py
+touch temp1.txt
+
+# 之后：
+touch test_user_auth.py
+touch temp_migration_proposal.txt
+```
+
+### 贡献
+
+欢迎贡献！请遵循以下准则：
+
+1. Fork 仓库
+2. 创建功能分支（`git checkout -b feature/amazing-hook`）
+3. 提交更改
+4. 推送到您的分支
+5. 提交拉取请求
+
+### 许可证
+
+本项目采用 MIT 许可证 - 详见 [LICENSE](LICENSE) 文件。
+
+### 支持
+
+如有问题、疑问或建议：
+- 在 [GitHub](https://github.com/EvanL1/claude-code-hooks/issues) 上提出问题
+- 查看现有文档和示例
+- 查看钩子源代码了解详细行为
