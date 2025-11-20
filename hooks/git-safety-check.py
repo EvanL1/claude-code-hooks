@@ -11,6 +11,34 @@ import re
 
 def check_git_command(command):
     """检查git命令的安全性"""
+    # 检查是否使用 --no-verify 跳过hooks - 直接阻止
+    # 只检测作为命令参数的 --no-verify，不检测引号内或heredoc内的
+    # 方法：排除在引号内和heredoc内的内容
+    import shlex
+
+    # 简单检测：--no-verify 作为独立参数（前后有空格或在行首/行尾）
+    if re.search(r'(^|\s)--no-verify(\s|$)', command):
+        # 进一步检查：确保不在引号或heredoc内
+        # 检测是否在 -m "..." 或 <<'EOF' ... EOF 之间
+        in_quotes = False
+        in_heredoc = False
+
+        # 简化检测：如果命令中有 -m "..." 或 <<'EOF'，检查 --no-verify 的位置
+        msg_match = re.search(r'-m\s+["\'].*?["\']', command)
+        heredoc_match = re.search(r'<<["\']?EOF["\']?.*?EOF', command, re.DOTALL)
+
+        verify_pos = command.find('--no-verify')
+        safe_in_message = False
+
+        if msg_match and msg_match.start() < verify_pos < msg_match.end():
+            safe_in_message = True
+        if heredoc_match and heredoc_match.start() < verify_pos < heredoc_match.end():
+            safe_in_message = True
+
+        if not safe_in_message:
+            print("❌ 禁止使用 --no-verify 跳过Git Hooks验证！", file=sys.stderr)
+            sys.exit(2)
+
     # 受保护的分支
     protected_branches = ["main", "master", "production", "prod"]
 
@@ -28,7 +56,7 @@ def check_git_command(command):
             print(error_msg, file=sys.stderr)
             sys.exit(2)  # Exit code 2 = blocking error
 
-        if re.search(f"git\s+branch\s+-[dD].*{branch}", command):
+        if re.search(rf"git\s+branch\s+-[dD].*{branch}", command):
             error_msg = f"❌ 阻止删除受保护分支 '{branch}'"
             print(error_msg, file=sys.stderr)
             sys.exit(2)  # Exit code 2 = blocking error
